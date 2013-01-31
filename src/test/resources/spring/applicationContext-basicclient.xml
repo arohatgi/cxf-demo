@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sec="http://cxf.apache.org/configuration/security" xmlns:http="http://cxf.apache.org/transports/http/configuration" xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd
+      http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+      http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <http:conduit name="*.http-conduit">
+        <http:client AutoRedirect="true" Connection="Keep-Alive" />
+        <http:authorization>
+            <sec:UserName>${jaxws.client.username}</sec:UserName>
+            <sec:Password>${jaxws.client.password}</sec:Password>
+            <sec:AuthorizationType>Basic</sec:AuthorizationType>
+        </http:authorization>
+    </http:conduit>
+
+    <jaxws:client id="helloService" serviceClass="com.bulain.cxf.jarws.HelloService" address="http://localhost:8083/HelloService">
+        <jaxws:features>
+            <bean class="org.apache.cxf.feature.LoggingFeature" />
+        </jaxws:features>
+    </jaxws:client>
+    
+    <!-- 
+    <jaxws:client id="helloService" serviceClass="com.bulain.cxf.jarws.HelloService" address="http://localhost:8083/HelloService" username="${jaxws.client.username}" password="${jaxws.client.password}">
+        <jaxws:features>
+            <bean class="org.apache.cxf.feature.LoggingFeature" />
+        </jaxws:features>
+    </jaxws:client>
+     -->
+
+</beans>  

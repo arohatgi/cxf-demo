@@ -1,0 +1,38 @@
+This is CXF Demo Project.
+
+If you want to build this project, please follow the next step.
+1, checkout out parent and run: mvn install.
+2, mvn clean package
+
+Generate java code according wsdl and wadl
+mvn generate-sources -Pcxf
+mvn eclipse:eclipse -Pcxf
+
+Start jetty server
+mvn jetty:run -Pit
+
+wsdl, wadl, xml, json
+http://localhost:8082/cxf-demo/services/HelloService?wsdl
+http://localhost:8083/jaxrs/person?_wadl
+http://localhost:8083/jaxrs/person?_type=xml
+http://localhost:8083/jaxrs/person?_type=json
+
+
+Https Encrypt Signature
+#generate server and client jks for soap
+keytool -genkeypair -alias server -keyalg RSA -dname "CN=Server,OU=Development,O=Test,L=Shanghai,S=SH,C=CN" -keystore server.jks -keypass server -storepass server -validity 3650
+keytool -selfcert -alias server -storepass server -keypass server -keystore server.jks -validity 3650
+keytool -genkeypair -alias client -keyalg RSA -dname "CN=Client,OU=Development,O=Test,L=Shanghai,S=SH,C=CN" -keystore client.jks -keypass client -storepass client -validity 3650
+keytool -selfcert -alias client -storepass client -keypass client -keystore client.jks -validity 3650
+keytool -list -keystore server.jks -storepass server
+keytool -list -keystore client.jks -storepass client
+
+keytool -exportcert -alias server -file server-pub.cer -storepass server -keystore server.jks
+keytool -printcert -file server-pub.cer
+keytool -importcert -alias server -file server-pub.cer -storepass client -keystore client.jks -noprompt
+keytool -list -keystore client.jks -storepass client
+
+keytool -exportcert -alias client -file client-pub.cer -storepass client -keystore client.jks
+keytool -printcert -file client-pub.cer
+keytool -importcert -alias client -file client-pub.cer -storepass server -keystore server.jks -noprompt
+keytool -list -keystore server.jks -storepass server

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:simple="http://cxf.apache.org/simple"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://cxf.apache.org/simple http://cxf.apache.org/schemas/simple.xsd">
+
+    <simple:client id="helloService" serviceClass="com.bulain.cxf.jarws.HelloService" address="http://localhost:8083/HelloService">
+        <simple:features>
+            <bean class="org.apache.cxf.feature.LoggingFeature" />
+        </simple:features>
+    </simple:client>
+</beans>

@@ -1,0 +1,33 @@
+<project name="cxf-demo" default="copy" basedir=".">
+	<property file="build.properties"/>
+
+	<path id="classpath">
+		<fileset dir="target/${ant.project.name}/WEB-INF/lib">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="copy">
+		<copy todir="target/${ant.project.name}">
+			<fileset dir="src/main/webapp" includes="**/*" />
+		</copy>
+		<copy todir="target/classes">
+			<fileset dir="src/main/resources" includes="**/*" />
+		</copy>
+		<native2ascii dest="target/classes" src="src/main/resources" includes="**/*.chinese" ext=".properties" encoding="UTF-8"/>
+
+		<copy todir="target/${ant.project.name}/WEB-INF/classes">
+			<fileset dir="target/classes" includes="**/*" />
+		</copy>
+	</target>
+
+	<target name="wsdl-viewer">
+		<mkdir dir="target/wsdl-viewer" />
+		<!--
+		<get dest="target/wsdl-viewer/wsdl-viewer.xsl" src="http://tomi.vanek.sk/xml/wsdl-viewer.xsl"/>
+		-->
+		<xslt style="src/test/resources/wsdl-viewer/wsdl-viewer.xsl" destdir="target/wsdl-viewer">
+			<include name="src/test/resources/wsdl-viewer/WsdlService.wsdl" />
+		</xslt>
+	</target>
+</project>

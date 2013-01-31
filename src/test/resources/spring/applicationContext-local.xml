@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+
+    <import resource="classpath*:META-INF/cxf/cxf.xml" />
+
+    <bean id="helloServiceImpl" class="com.bulain.cxf.jarws.HelloServiceImpl" />
+
+    <jaxws:server serviceClass="com.bulain.cxf.jarws.HelloService" address="local://HelloService">
+        <jaxws:serviceBean>
+            <ref bean="helloServiceImpl" />
+        </jaxws:serviceBean>
+        <jaxws:features>
+            <bean class="org.apache.cxf.feature.LoggingFeature" />
+        </jaxws:features>
+    </jaxws:server>
+
+    <jaxws:client id="helloService" serviceClass="com.bulain.cxf.jarws.HelloService" address="local://HelloService">
+        <jaxws:features>
+            <bean class="org.apache.cxf.feature.LoggingFeature" />
+        </jaxws:features>
+    </jaxws:client>
+</beans>

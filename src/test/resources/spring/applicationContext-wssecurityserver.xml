@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:sec="http://cxf.apache.org/configuration/security" xmlns:http="http://cxf.apache.org/transports/http/configuration" xmlns:jaxws="http://cxf.apache.org/jaxws"
+    xsi:schemaLocation="http://cxf.apache.org/configuration/security http://cxf.apache.org/schemas/configuration/security.xsd
+      http://cxf.apache.org/transports/http/configuration http://cxf.apache.org/schemas/configuration/http-conf.xsd
+      http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <import resource="classpath*:META-INF/cxf/cxf.xml" />
+
+    <bean id="helloServiceImpl" class="com.bulain.cxf.jarws.HelloServiceImpl" />
+    <bean id="serverPasswordCallback" class="com.bulain.cxf.security.ServerPasswordCallback">
+        <property name="privateAlais">
+            <list>
+                <value>${jaxws.server.signatureUser}</value>
+            </list>
+        </property>
+        <property name="location" value="${jaxws.server.location}" />
+    </bean>
+
+    <jaxws:server serviceClass="com.bulain.cxf.jarws.HelloService" address="http://localhost:8083/HelloService">
+        <jaxws:serviceBean>
+            <ref bean="helloServiceImpl" />
+        </jaxws:serviceBean>
+        <jaxws:features>
+            <bean class="org.apache.cxf.feature.LoggingFeature" />
+            <bean class="org.apache.cxf.ws.addressing.WSAddressingFeature"/>
+        </jaxws:features>
+        <jaxws:inInterceptors>
+            <bean class="org.apache.cxf.ws.security.wss4j.WSS4JInInterceptor">
+                <constructor-arg>
+                    <map>
+                        <entry key="action" value="UsernameToken Timestamp Signature Encrypt" />
+                        <entry key="passwordCallbackRef" value-ref="serverPasswordCallback" />
+                        <entry key="signaturePropFile" value="certs/server.properties" />
+                        <entry key="decryptionPropFile" value="certs/server.properties" />
+                    </map>
+                </constructor-arg>
+            </bean>
+        </jaxws:inInterceptors>
+        <jaxws:outInterceptors>
+            <bean class="org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor">
+                <constructor-arg>
+                    <map>
+                        <entry key="action" value="Timestamp Signature" />
+                        <entry key="user" value="${jaxws.server.username}"/>
+                        <entry key="passwordCallbackRef" value-ref="serverPasswordCallback"/>
+                        <entry key="signaturePropFile" value="certs/server.properties" />
+                        <entry key="signatureUser" value="${jaxws.server.signatureUser}" />
+                        <entry key="signatureParts" value="{Element}{http://schemas.xmlsoap.org/soap/envelope/}Body" />
+                    </map>
+                </constructor-arg>
+            </bean>
+        </jaxws:outInterceptors>
+    </jaxws:server>
+
+</beans>
